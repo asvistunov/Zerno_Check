@@ -100,7 +100,7 @@ def main():
                 ZernoCheckerBot.send_message(i , str(list(ZernoCheckerBot.final_table().iloc[0,:])))
                 site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
         if last_chat_text.lower() == 'ты работаешь?':
-            guide_bot.send_message(last_chat_id, 'Да')
+            ZernoCheckerBot.send_message(last_chat_id, 'Да')
 
 if __name__ == '__main__':  
     try:
