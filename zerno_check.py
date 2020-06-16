@@ -88,7 +88,7 @@ def main():
     while True:
         ZernoCheckerBot.get_updates(new_offset)
         last_update = ZernoCheckerBot.get_last_update()
-        # if last_update == None: continue
+        if last_update == None: continue
         last_update_id = last_update['update_id']
         last_chat_id = last_update['message']['chat']['id']
         last_chat_name = last_update['message']['chat']['first_name']
