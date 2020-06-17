@@ -14,8 +14,6 @@ import time
 
 
 # In[3]:
-
-
 token = "1171007024:AAGxwY_kQ0w2lpG1KrVutwY6P5n_fDQQoVs"
 html = 'https://belgorod.zol.ru'
 
@@ -76,10 +74,29 @@ class BotHandler:
         zerno_table = zerno_table.replace(np.nan, '', regex=True)
         zerno_table = zerno_table[zerno_table['Регион'].apply(self.is_date) == False]
         return zerno_table
-
+    
+    def details(self):
+        html_for_parse_2 = requests.get(self.html).content
+        soup_2 = BeautifulSoup(html_for_parse_2)
+        raw_html_2 = soup_2.select('#table_offers')[0]
+        raw_html_2 = raw_html_2.find_all('table')
+        link = raw_html_2[0].find('a').get('href')
+        html_for_further_parse = requests.get(link).content
+        needed_table = BeautifulSoup(html_for_further_parse)
+        needed_table = needed_table.find_all('table')
+        needed_table = str(needed_table)
+        table_with_info = pd.read_html(needed_table)[0].iloc[:,:2]
+        reques = []
+        for dic in dict(table_with_info.set_index(0).loc[['Автор','Телефон']])[1]:
+            if 'Сообщение' and 'автору' in dic.split(' '):
+                dic = ' '.join(dic.split(' ')[:2])
+            reques.append(dic)
+        reques = f'{reques[0]} {reques[1]}'
+        return reques
+    
+ZernoCheckerBot = BotHandler(token)
 
 # In[ ]:
-
 
 ZernoCheckerBot = BotHandler(token)
 def main():
@@ -94,14 +111,18 @@ def main():
         last_chat_id = last_update['message']['chat']['id']
         last_chat_name = last_update['message']['chat']['first_name']
         last_chat_text = last_update['message']['text']
+        
         if last_chat_id not in all_chat_ids:
             all_chat_ids.append(last_chat_id)
         if ZernoCheckerBot.final_table().iloc[0,:].equals(site_last_upd) == False:
             for i in all_chat_ids:
                 ZernoCheckerBot.send_message(i , str(list(ZernoCheckerBot.final_table().iloc[0,:])))
+                ZernoCheckerBot.send_message(i , ZernoCheckerBot.details())
                 site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
         if last_chat_text.lower() == 'ты работаешь?':
             ZernoCheckerBot.send_message(last_chat_id, 'Да')
+        if last_chat_text.lower() == 'время':
+            ZernoCheckerBot.send_message(last_chat_id, datetime.now().strftime('%H:%M:%S') ) 
 
 if __name__ == '__main__':  
     try:
