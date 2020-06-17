@@ -2,6 +2,7 @@ beautifulsoup4==4.9.1
 bs4==0.0.1
 certifi==2020.4.5.2
 chardet==3.0.4
+DateTime==4.3
 idna==2.9
 lxml==4.5.1
 numpy==1.18.5
@@ -12,3 +13,4 @@ requests==2.23.0
 six==1.15.0
 soupsieve==2.0.1
 urllib3==1.25.9
+zope.interface==5.1.0
