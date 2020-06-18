@@ -15,7 +15,7 @@ from datetime import datetime
 
 # In[3]:
 token = "1171007024:AAGxwY_kQ0w2lpG1KrVutwY6P5n_fDQQoVs"
-html = 'https://belgorod.zol.ru'
+html = 'https://cfo.zol.ru/?sell=on&buy=on&without_exact_fo=On&buy=On&sell=On&buy_other=Off&sell_other=Off&other=Off&nearby_regions=Off&nearby_countries=Off&without_exact_fo=On&'
 
 class BotHandler:
     
@@ -93,12 +93,25 @@ class BotHandler:
             reques.append(dic)
         reques = f'{reques[0]} {reques[1]}'
         return reques
+    def text_of_ad(self):
+        html_for_parse_2 = requests.get(self.html).content
+        soup_2 = BeautifulSoup(html_for_parse_2)
+        raw_html_2 = soup_2.select('#table_offers')[0]
+        raw_html_2 = raw_html_2.find_all('table')
+        link = raw_html_2[0].find('a').get('href')
+        html_for_further_parse = requests.get(link).content
+        text_ad = BeautifulSoup(html_for_further_parse).body.find_all(class_ = 'col-12 news-body')[0].get_text().replace('\r', '')
+        text_ad = text_ad.replace('\n', '')
+        text_ad = text_ad.replace('Сообщение автору объявленияОтправитьДля получения обратной связи, пожалуйста, заполните следующую формуВаше имяВаш E-mailВаш пароль:ОтправитьДля удобства отправки сообщений рекомендуется предварительно авторизироваться на сайте, в этом случае не будет необходимости в заполнении данной формы.                                     Если Вы еще не зарегистрированы на сайте, пожалуйста, зарегистрируйтесь.','')
+        text_ad = re.sub(' +', ' ', text_ad)
+        text_ad = text_ad.replace('\xa0', '')
+        return text_ad
+        
     
 ZernoCheckerBot = BotHandler(token)
 
 # In[ ]:
 
-ZernoCheckerBot = BotHandler(token)
 def main():
     new_offset = None
     site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
@@ -117,7 +130,7 @@ def main():
         if ZernoCheckerBot.final_table().iloc[0,:].equals(site_last_upd) == False:
             for i in all_chat_ids:
                 ZernoCheckerBot.send_message(i , str(list(ZernoCheckerBot.final_table().iloc[0,:])))
-                ZernoCheckerBot.send_message(i , ZernoCheckerBot.details())
+                ZernoCheckerBot.send_message(i , f'{ZernoCheckerBot.text_of_ad()} \n {ZernoCheckerBot.details()}')
                 site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
         if last_chat_text.lower() == 'ты работаешь?':
             ZernoCheckerBot.send_message(last_chat_id, 'Да')
