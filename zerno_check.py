@@ -111,7 +111,6 @@ class BotHandler:
 ZernoCheckerBot = BotHandler(token)
 
 # In[ ]:
-
 def main():
     new_offset = None
     site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
@@ -124,19 +123,22 @@ def main():
         last_chat_id = last_update['message']['chat']['id']
         last_chat_name = last_update['message']['chat']['first_name']
         last_chat_text = last_update['message']['text']
+        if last_chat_text.lower() == 'ты работаешь?':
+            ZernoCheckerBot.send_message(last_chat_id, 'Да')
+            continue
+        if last_chat_text.lower() == 'время':
+            ZernoCheckerBot.send_message(last_chat_id, datetime.now().strftime('%H:%M:%S') ) 
+            continue
         if ZernoCheckerBot.final_table().iloc[0,:].equals(site_last_upd) == False:
             for i in all_chat_ids:
                 ZernoCheckerBot.send_message(i , str(list(ZernoCheckerBot.final_table().iloc[0,:])))
-                ZernoCheckerBot.send_message(i , f'{ZernoCheckerBot.text_of_ad()} \n {ZernoCheckerBot.details()}')
+                text = ZernoCheckerBot.text_of_ad()
+                det = ZernoCheckerBot.details()
+                ZernoCheckerBot.send_message('252157295' , '%s \n%s' % (text, det) )
                 site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
-        if last_chat_text.lower() == 'ты работаешь?':
-            ZernoCheckerBot.send_message(last_chat_id, 'Да')
-        if last_chat_text.lower() == 'время':
-            ZernoCheckerBot.send_message(last_chat_id, datetime.now().strftime('%H:%M:%S') ) 
 
 if __name__ == '__main__':  
     try:
         main()
     except KeyboardInterrupt:
         exit() 
-
