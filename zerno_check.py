@@ -131,10 +131,8 @@ def main():
             continue
         if ZernoCheckerBot.final_table().iloc[0,:].equals(site_last_upd) == False:
             for i in all_chat_ids:
-                ZernoCheckerBot.send_message(i , str(list(ZernoCheckerBot.final_table().iloc[0,:])))
-                text = ZernoCheckerBot.text_of_ad()
-                det = ZernoCheckerBot.details()
-                ZernoCheckerBot.send_message('252157295' , '%s \n%s' % (text, det) )
+                ZernoCheckerBot.send_message(i, ZernoCheckerBot.details() )
+                ZernoCheckerBot.send_message(i, ZernoCheckerBot.text_of_ad() )
                 site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
 
 if __name__ == '__main__':  
