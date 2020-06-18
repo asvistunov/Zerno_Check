@@ -115,7 +115,7 @@ ZernoCheckerBot = BotHandler(token)
 def main():
     new_offset = None
     site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
-    all_chat_ids = []
+    all_chat_ids = ['252157295','330165478','893215787']
     while True:
         ZernoCheckerBot.get_updates(new_offset)
         last_update = ZernoCheckerBot.get_last_update()
@@ -124,9 +124,6 @@ def main():
         last_chat_id = last_update['message']['chat']['id']
         last_chat_name = last_update['message']['chat']['first_name']
         last_chat_text = last_update['message']['text']
-        
-        if last_chat_id not in all_chat_ids:
-            all_chat_ids.append(last_chat_id)
         if ZernoCheckerBot.final_table().iloc[0,:].equals(site_last_upd) == False:
             for i in all_chat_ids:
                 ZernoCheckerBot.send_message(i , str(list(ZernoCheckerBot.final_table().iloc[0,:])))
