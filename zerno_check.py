@@ -68,7 +68,7 @@ class BotHandler:
 
     def final_table(self):
         html_for_parse = requests.get(self.html).content
-        soup = BeautifulSoup(html_for_parse)
+        soup = BeautifulSoup(html_for_parse, features='lxml')
         raw_html = str(soup.select('#table_offers')[0])
         df = pd.read_html(raw_html)
         zerno_table = df[0]
@@ -80,7 +80,7 @@ class BotHandler:
     
     def details(self):
         html_for_parse_2 = requests.get(self.html).content
-        soup_2 = BeautifulSoup(html_for_parse_2)
+        soup_2 = BeautifulSoup(html_for_parse_2, features='lxml')
         raw_html_2 = soup_2.select('#table_offers')[0]
         raw_html_2 = raw_html_2.find_all('table')
         link = raw_html_2[0].find('a').get('href')
