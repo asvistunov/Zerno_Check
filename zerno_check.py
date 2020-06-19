@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[81]:
 
-## test
 
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 from dateutil.parser import parse
+import re
 import time
-from datetime import datetime 
+from datetime import datetime
 
-# In[3]:
+
+# In[104]:
+
+
 token = "1171007024:AAGxwY_kQ0w2lpG1KrVutwY6P5n_fDQQoVs"
 html = 'https://cfo.zol.ru/?sell=on&buy=on&without_exact_fo=On&buy=On&sell=On&buy_other=Off&sell_other=Off&other=Off&nearby_regions=Off&nearby_countries=Off&without_exact_fo=On&'
 
@@ -110,7 +113,11 @@ class BotHandler:
     
 ZernoCheckerBot = BotHandler(token)
 
+
 # In[ ]:
+
+
+ZernoCheckerBot = BotHandler(token)
 def main():
     new_offset = None
     site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
@@ -123,20 +130,30 @@ def main():
         last_chat_id = last_update['message']['chat']['id']
         last_chat_name = last_update['message']['chat']['first_name']
         last_chat_text = last_update['message']['text']
+        if ZernoCheckerBot.final_table().iloc[0,:].equals(site_last_upd) == False:
+            for i in all_chat_ids:
+                ZernoCheckerBot.send_message(i, ZernoCheckerBot.text_of_ad() )
+                time.sleep(3)
+                ZernoCheckerBot.send_message(i, ZernoCheckerBot.details() )
+                site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
         if last_chat_text.lower() == 'ты работаешь?':
             ZernoCheckerBot.send_message(last_chat_id, 'Да')
             continue
         if last_chat_text.lower() == 'время':
             ZernoCheckerBot.send_message(last_chat_id, datetime.now().strftime('%H:%M:%S') ) 
             continue
-        if ZernoCheckerBot.final_table().iloc[0,:].equals(site_last_upd) == False:
-            for i in all_chat_ids:
-                ZernoCheckerBot.send_message(i, ZernoCheckerBot.details() )
-                ZernoCheckerBot.send_message(i, ZernoCheckerBot.text_of_ad() )
-                site_last_upd = ZernoCheckerBot.final_table().iloc[0,:]
 
 if __name__ == '__main__':  
     try:
         main()
     except KeyboardInterrupt:
         exit() 
+
+
+# In[131]:
+
+
+# my chat id = '252157295'
+# Papa chat id = '330165478'
+# Dydya Andrei = '893215787'
+
